@@ -1,7 +1,6 @@
 <style lang="scss">
   @import '../scss/vue-select.scss';
 </style>
-
 <template>
   <div :dir="dir" class="v-select" :class="stateClasses">
     <slot name="header" v-bind="scope.header" />
@@ -82,6 +81,7 @@
 </template>
 
 <script type="text/babel">
+  import Vue from "vue";
   import pointerScroll from '../mixins/pointerScroll'
   import typeAheadPointer from '../mixins/typeAheadPointer'
   import ajax from '../mixins/ajax'
@@ -208,6 +208,11 @@
         default: true
       },
 
+      openByDefault: {
+        type: Boolean,
+        default: false
+      },
+      
       /**
        * Tells vue-select what key to use when generating option
        * labels when each `option` is an object.
@@ -634,6 +639,10 @@
       }
 
       this.$on('option:created', this.pushTag)
+
+      if (this.openByDefault && !this.disabled) {
+        Vue.nextTick( () => this.toggleDropdown({ preventDefault: () => {} }));
+      }
     },
 
     methods: {
